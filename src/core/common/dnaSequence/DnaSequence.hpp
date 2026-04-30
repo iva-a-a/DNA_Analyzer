@@ -5,7 +5,7 @@
 
 class DnaSequence {
 public:
-  DnaSequence() = default;
+  DnaSequence();
   explicit DnaSequence(const std::string &sequence);
 
   std::size_t size() const noexcept;
