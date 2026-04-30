@@ -1,5 +1,5 @@
 #include "FileReader.hpp"
-#include "../core/common/errors/Errors.hpp"
+#include "../../core/common/errors/Errors.hpp"
 #include <fstream>
 
 std::string FileReader::readLine(const std::string &filePath) {
