@@ -3,6 +3,6 @@
 #include <string>
 
 namespace Validation {
-bool IsDnaChar(char ch) noexcept;
-bool IsDnaString(const std::string &value) noexcept;
+bool isDnaChar(char ch) noexcept;
+bool isDnaString(const std::string &value) noexcept;
 } // namespace Validation
