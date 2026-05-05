@@ -11,7 +11,7 @@ public:
   std::size_t size() const noexcept;
   bool empty() const noexcept;
 
-  const std::string &getSequence() const noexcept;
+  const std::string &value() const noexcept;
 
 private:
   std::string _sequence;

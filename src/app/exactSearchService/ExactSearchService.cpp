@@ -3,10 +3,9 @@
 
 ExactSearchResult ExactSearchService::search(const std::string &text,
                                              const std::string &pattern) const {
-  DnaSequence dnaText(text);
-  DnaSequence dnaPattern(pattern);
+  auto dnaText = DnaSequence(text);
+  auto dnaPattern = DnaSequence(pattern);
 
-  auto positions =
-      _searcher.find(dnaText.getSequence(), dnaPattern.getSequence());
+  auto positions = _searcher.find(dnaText.value(), dnaPattern.value());
   return ExactSearchResult{positions};
 }

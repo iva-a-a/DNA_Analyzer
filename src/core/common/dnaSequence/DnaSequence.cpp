@@ -15,6 +15,4 @@ std::size_t DnaSequence::size() const noexcept { return _sequence.size(); }
 
 bool DnaSequence::empty() const noexcept { return _sequence.empty(); }
 
-const std::string &DnaSequence::getSequence() const noexcept {
-  return _sequence;
-}
+const std::string &DnaSequence::value() const noexcept { return _sequence; }

@@ -8,7 +8,7 @@ TEST(DnaSequenceTest, DefaultConstructorCreatesEmptySequence) {
 
   EXPECT_TRUE(sequence.empty());
   EXPECT_EQ(sequence.size(), 0u);
-  EXPECT_EQ(sequence.getSequence(), "");
+  EXPECT_EQ(sequence.value(), "");
 }
 
 TEST(DnaSequenceTest, ConstructorAcceptsEmptyString) {
@@ -16,7 +16,7 @@ TEST(DnaSequenceTest, ConstructorAcceptsEmptyString) {
 
   EXPECT_TRUE(sequence.empty());
   EXPECT_EQ(sequence.size(), 0u);
-  EXPECT_EQ(sequence.getSequence(), "");
+  EXPECT_EQ(sequence.value(), "");
 }
 
 TEST(DnaSequenceTest, ConstructorAcceptsValidDnaSequence) {
@@ -24,7 +24,7 @@ TEST(DnaSequenceTest, ConstructorAcceptsValidDnaSequence) {
 
   EXPECT_FALSE(sequence.empty());
   EXPECT_EQ(sequence.size(), 4u);
-  EXPECT_EQ(sequence.getSequence(), "ACGT");
+  EXPECT_EQ(sequence.value(), "ACGT");
 }
 
 TEST(DnaSequenceTest, ConstructorAcceptsSingleCharacterSequences) {
@@ -38,7 +38,7 @@ TEST(DnaSequenceTest, ConstructorAcceptsLongValidSequence) {
   DnaSequence sequence("ACGTACGTACGT");
 
   EXPECT_EQ(sequence.size(), 12u);
-  EXPECT_EQ(sequence.getSequence(), "ACGTACGTACGT");
+  EXPECT_EQ(sequence.value(), "ACGTACGTACGT");
 }
 
 TEST(DnaSequenceTest, ConstructorThrowsValidationErrorForInvalidCharacters) {
@@ -61,8 +61,8 @@ TEST(DnaSequenceTest, ConstructorThrowsValidationErrorWithCorrectMessage) {
 TEST(DnaSequenceTest, GetSequenceReturnsConstReferenceToInternalString) {
   DnaSequence sequence("ACGT");
 
-  const std::string &storedSequence = sequence.getSequence();
+  const std::string &storedSequence = sequence.value();
 
   EXPECT_EQ(storedSequence, "ACGT");
-  EXPECT_EQ(&storedSequence, &sequence.getSequence());
+  EXPECT_EQ(&storedSequence, &sequence.value());
 }
