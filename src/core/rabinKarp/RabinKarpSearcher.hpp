@@ -7,9 +7,6 @@
 
 class RabinKarpSearcher {
 public:
-  RabinKarpSearcher() = default;
-  ~RabinKarpSearcher() = default;
-
   std::vector<std::size_t> find(const std::string &text,
                                 const std::string &pattern) const;
 
