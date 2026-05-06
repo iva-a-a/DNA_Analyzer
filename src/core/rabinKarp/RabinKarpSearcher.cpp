@@ -28,10 +28,10 @@ RabinKarpSearcher::find(const std::string &text,
   return positions;
 }
 
-std::uint64_t RabinKarpSearcher::calculateHash(const std::string &s) const {
+std::uint64_t RabinKarpSearcher::calculateHash(const std::string &text) const {
   std::uint64_t hashValue = 0;
 
-  for (char c : s) {
+  for (char c : text) {
     auto value = static_cast<unsigned char>(c) + 1;
     hashValue = (hashValue * _p + value) % _m;
   }
