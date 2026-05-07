@@ -6,8 +6,6 @@
 
 class ExactSearchService {
 public:
-  ExactSearchService() = default;
-
   ExactSearchResult search(const std::string &text,
                            const std::string &pattern) const;
 
