@@ -1,7 +1,7 @@
 #pragma once
 
-#include "model/AlignmentResult.hpp"
-#include "model/ScoringScheme.hpp"
+#include "models/AlignmentResult.hpp"
+#include "models/ScoringScheme.hpp"
 #include <vector>
 
 class NeedlemanWunschAligner {
