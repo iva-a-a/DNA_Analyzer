@@ -1,11 +1,8 @@
 #pragma once
 
-#include "../../core/kSimilarity/KSimilaritySolver.hpp"
+#include <string>
 
 class KSimilarityService {
 public:
-  int search(const std::string &first, const std::string &second) const;
-
-private:
-  KSimilaritySolver _solver;
+  int run(const std::string &inputFilePath) const;
 };

@@ -1,14 +1,9 @@
 #pragma once
 
-#include "../../core/needlemanWunsch/NeedlemanWunschAligner.hpp"
+#include "../../core/needlemanWunsch/models/AlignmentResult.hpp"
 
 class AlignmentService {
 public:
-  int computeScore(const std::string &first, const std::string &second,
-                   const ScoringScheme &scoring) const;
-  AlignmentResult align(const std::string &first, const std::string &second,
-                        const ScoringScheme &scoring) const;
-
-private:
-  NeedlemanWunschAligner _aligner;
+  int runScoreOnly(const std::string &inputFilePath) const;
+  AlignmentResult runFullAlignment(const std::string &inputFilePath) const;
 };

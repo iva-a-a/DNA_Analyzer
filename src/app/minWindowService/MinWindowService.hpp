@@ -1,11 +1,8 @@
 #pragma once
 
-#include "../../core/minWindow/MinWindowFinder.hpp"
+#include <string>
 
 class MinWindowService {
 public:
-  std::string find(const std::string &text, const std::string &pattern) const;
-
-private:
-  MinWindowFinder _finder;
+  std::string run(const std::string &inputFilePath) const;
 };
