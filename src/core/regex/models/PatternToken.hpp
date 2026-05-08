@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TokenType.hpp"
+
 #include <optional>
 
 struct PatternToken {

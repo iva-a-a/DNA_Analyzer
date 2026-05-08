@@ -1,4 +1,5 @@
 #include "NeedlemanWunschAligner.hpp"
+
 #include <algorithm>
 
 int NeedlemanWunschAligner::computeScore(const std::string &first,

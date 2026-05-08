@@ -1,8 +1,9 @@
 #pragma once
 
+#include <vector>
+
 #include "models/AlignmentResult.hpp"
 #include "models/ScoringScheme.hpp"
-#include <vector>
 
 class NeedlemanWunschAligner {
 public:

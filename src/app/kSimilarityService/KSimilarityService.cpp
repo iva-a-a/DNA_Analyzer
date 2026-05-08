@@ -1,4 +1,5 @@
 #include "KSimilarityService.hpp"
+
 #include "../../core/common/dnaSequence/DnaSequence.hpp"
 
 int KSimilarityService::search(const std::string &first,

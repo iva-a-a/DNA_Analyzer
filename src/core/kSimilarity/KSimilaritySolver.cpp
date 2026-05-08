@@ -1,4 +1,5 @@
 #include "KSimilaritySolver.hpp"
+
 #include <algorithm>
 #include <climits>
 

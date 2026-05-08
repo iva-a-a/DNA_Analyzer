@@ -1,4 +1,5 @@
 #include "MinWindowService.hpp"
+
 #include "../../core/common/dnaSequence/DnaSequence.hpp"
 
 std::string MinWindowService::find(const std::string &text,

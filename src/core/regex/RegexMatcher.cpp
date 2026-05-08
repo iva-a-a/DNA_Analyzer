@@ -1,4 +1,5 @@
 #include "RegexMatcher.hpp"
+
 #include "parser/PatternParser.hpp"
 
 bool RegexMatcher::matches(const std::string &text,

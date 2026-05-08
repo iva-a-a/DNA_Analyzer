@@ -1,4 +1,5 @@
 #include "DnaSequence.hpp"
+
 #include "../errors/Errors.hpp"
 #include "../validation/Validation.hpp"
 

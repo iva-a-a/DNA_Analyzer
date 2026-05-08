@@ -7,7 +7,7 @@ TEST(DnaSequenceTest, DefaultConstructorCreatesEmptySequence) {
   DnaSequence sequence;
 
   EXPECT_TRUE(sequence.empty());
-  EXPECT_EQ(sequence.size(), 0u);
+  EXPECT_EQ(sequence.size(), size_t{0});
   EXPECT_EQ(sequence.value(), "");
 }
 
@@ -15,7 +15,7 @@ TEST(DnaSequenceTest, ConstructorAcceptsEmptyString) {
   DnaSequence sequence("");
 
   EXPECT_TRUE(sequence.empty());
-  EXPECT_EQ(sequence.size(), 0u);
+  EXPECT_EQ(sequence.size(), size_t{0});
   EXPECT_EQ(sequence.value(), "");
 }
 
@@ -23,7 +23,7 @@ TEST(DnaSequenceTest, ConstructorAcceptsValidDnaSequence) {
   DnaSequence sequence("ACGT");
 
   EXPECT_FALSE(sequence.empty());
-  EXPECT_EQ(sequence.size(), 4u);
+  EXPECT_EQ(sequence.size(), size_t{4});
   EXPECT_EQ(sequence.value(), "ACGT");
 }
 
@@ -37,7 +37,7 @@ TEST(DnaSequenceTest, ConstructorAcceptsSingleCharacterSequences) {
 TEST(DnaSequenceTest, ConstructorAcceptsLongValidSequence) {
   DnaSequence sequence("ACGTACGTACGT");
 
-  EXPECT_EQ(sequence.size(), 12u);
+  EXPECT_EQ(sequence.size(), size_t{12});
   EXPECT_EQ(sequence.value(), "ACGTACGTACGT");
 }
 

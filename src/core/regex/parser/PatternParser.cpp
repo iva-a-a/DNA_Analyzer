@@ -1,6 +1,8 @@
 #include "PatternParser.hpp"
-#include "../../common/errors/Errors.hpp"
+
 #include <cctype>
+
+#include "../../common/errors/Errors.hpp"
 
 std::vector<PatternToken>
 PatternParser::parse(const std::string &pattern) const {

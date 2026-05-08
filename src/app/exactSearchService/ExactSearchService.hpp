@@ -1,8 +1,9 @@
 #pragma once
 
+#include <string>
+
 #include "../../core/rabinKarp/RabinKarpSearcher.hpp"
 #include "../../core/rabinKarp/model/ExactSearchResult.hpp"
-#include <string>
 
 class ExactSearchService {
 public:

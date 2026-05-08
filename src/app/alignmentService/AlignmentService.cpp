@@ -1,4 +1,5 @@
 #include "AlignmentService.hpp"
+
 #include "../../core/common/dnaSequence/DnaSequence.hpp"
 
 int AlignmentService::computeScore(const std::string &first,

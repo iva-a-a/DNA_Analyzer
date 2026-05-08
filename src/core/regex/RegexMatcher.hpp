@@ -1,8 +1,9 @@
 #pragma once
 
-#include "models/PatternToken.hpp"
 #include <string>
 #include <vector>
+
+#include "models/PatternToken.hpp"
 
 class RegexMatcher {
 public:

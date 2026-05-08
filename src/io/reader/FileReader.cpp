@@ -1,6 +1,8 @@
 #include "FileReader.hpp"
-#include "../../core/common/errors/Errors.hpp"
+
 #include <fstream>
+
+#include "../../core/common/errors/Errors.hpp"
 
 template <typename Func>
 auto FileReader::withFile(const std::string &filePath, Func func) {

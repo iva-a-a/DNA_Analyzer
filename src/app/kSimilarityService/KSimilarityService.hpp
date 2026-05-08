@@ -1,4 +1,5 @@
 #pragma once
+
 #include "../../core/kSimilarity/KSimilaritySolver.hpp"
 
 class KSimilarityService {
