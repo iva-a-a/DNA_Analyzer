@@ -1,16 +1,16 @@
 #pragma once
 
+#include <memory>
+#include <unordered_map>
+
 #include "../CommandLineOptions.hpp"
+#include "../commands/ICommandHandler.hpp"
 
 class CommandDispatcher {
 public:
+  CommandDispatcher();
   int dispatch(const CommandLineOptions &options) const;
 
 private:
-  int runExactSearch(const CommandLineOptions &options) const;
-  int runAlignScore(const CommandLineOptions &options) const;
-  int runAlign(const CommandLineOptions &options) const;
-  int runRegexMatch(const CommandLineOptions &options) const;
-  int runKSimilarity(const CommandLineOptions &options) const;
-  int runMinWindow(const CommandLineOptions &options) const;
+  std::unordered_map<CommandType, std::unique_ptr<ICommandHandler>> _handlers;
 };
