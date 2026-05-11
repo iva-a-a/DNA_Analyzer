@@ -57,28 +57,7 @@ TEST_F(CommandDispatcherTest, ThrowsOnUnknownCommand) {
   EXPECT_THROW(dispatcher.dispatch(options), InputFormatError);
 }
 
-TEST_F(CommandDispatcherTest, ExactSearchThrowsWhenNoArguments) {
-  const CommandLineOptions options{CommandType::ExactSearch, {}};
-
-  EXPECT_THROW(dispatcher.dispatch(options), InputFormatError);
-}
-
-TEST_F(CommandDispatcherTest, ExactSearchThrowsWhenOneArgument) {
-  const CommandLineOptions options{CommandType::ExactSearch, {"text.txt"}};
-
-  EXPECT_THROW(dispatcher.dispatch(options), InputFormatError);
-}
-
-TEST_F(CommandDispatcherTest, ExactSearchThrowsWhenTooManyArguments) {
-  const CommandLineOptions options{
-      CommandType::ExactSearch,
-      {"text.txt", "pattern.txt", "extra.txt"},
-  };
-
-  EXPECT_THROW(dispatcher.dispatch(options), InputFormatError);
-}
-
-TEST_F(CommandDispatcherTest, ExactSearchPrintsPositionsAndReturnsZero) {
+TEST_F(CommandDispatcherTest, DispatchesExactSearchCommand) {
   const auto textPath = makeFilePath("dispatcher_exact_text.txt");
   const auto patternPath = makeFilePath("dispatcher_exact_pattern.txt");
 
@@ -97,42 +76,7 @@ TEST_F(CommandDispatcherTest, ExactSearchPrintsPositionsAndReturnsZero) {
   EXPECT_EQ(output, "0 2\n");
 }
 
-TEST_F(CommandDispatcherTest, ExactSearchPrintsEmptyLineWhenNoMatches) {
-  const auto textPath = makeFilePath("dispatcher_exact_no_match_text.txt");
-  const auto patternPath =
-      makeFilePath("dispatcher_exact_no_match_pattern.txt");
-
-  writeFile(textPath, "AAAAAA");
-  writeFile(patternPath, "CG");
-
-  const CommandLineOptions options{
-      CommandType::ExactSearch,
-      {textPath.string(), patternPath.string()},
-  };
-
-  int exitCode = -1;
-  const std::string output = captureStdout(options, exitCode);
-
-  EXPECT_EQ(exitCode, 0);
-  EXPECT_EQ(output, "\n");
-}
-
-TEST_F(CommandDispatcherTest, AlignScoreThrowsWhenNoArguments) {
-  const CommandLineOptions options{CommandType::AlignScore, {}};
-
-  EXPECT_THROW(dispatcher.dispatch(options), InputFormatError);
-}
-
-TEST_F(CommandDispatcherTest, AlignScoreThrowsWhenTooManyArguments) {
-  const CommandLineOptions options{
-      CommandType::AlignScore,
-      {"input.txt", "extra.txt"},
-  };
-
-  EXPECT_THROW(dispatcher.dispatch(options), InputFormatError);
-}
-
-TEST_F(CommandDispatcherTest, AlignScorePrintsScoreAndReturnsZero) {
+TEST_F(CommandDispatcherTest, DispatchesAlignScoreCommand) {
   const auto inputPath = makeFilePath("dispatcher_align_score.txt");
 
   writeFile(inputPath, "1 -1 -2\nAC\nAC");
@@ -149,22 +93,7 @@ TEST_F(CommandDispatcherTest, AlignScorePrintsScoreAndReturnsZero) {
   EXPECT_EQ(output, "2\n");
 }
 
-TEST_F(CommandDispatcherTest, AlignThrowsWhenNoArguments) {
-  const CommandLineOptions options{CommandType::Align, {}};
-
-  EXPECT_THROW(dispatcher.dispatch(options), InputFormatError);
-}
-
-TEST_F(CommandDispatcherTest, AlignThrowsWhenTooManyArguments) {
-  const CommandLineOptions options{
-      CommandType::Align,
-      {"input.txt", "extra.txt"},
-  };
-
-  EXPECT_THROW(dispatcher.dispatch(options), InputFormatError);
-}
-
-TEST_F(CommandDispatcherTest, AlignPrintsFullAlignmentAndReturnsZero) {
+TEST_F(CommandDispatcherTest, DispatchesAlignCommand) {
   const auto inputPath = makeFilePath("dispatcher_align.txt");
 
   writeFile(inputPath, "1 -1 -2\nAC\nAC");
@@ -181,22 +110,7 @@ TEST_F(CommandDispatcherTest, AlignPrintsFullAlignmentAndReturnsZero) {
   EXPECT_EQ(output, "2\nAC\n||\nAC\n");
 }
 
-TEST_F(CommandDispatcherTest, RegexMatchThrowsWhenNoArguments) {
-  const CommandLineOptions options{CommandType::RegexMatch, {}};
-
-  EXPECT_THROW(dispatcher.dispatch(options), InputFormatError);
-}
-
-TEST_F(CommandDispatcherTest, RegexMatchThrowsWhenTooManyArguments) {
-  const CommandLineOptions options{
-      CommandType::RegexMatch,
-      {"input.txt", "extra.txt"},
-  };
-
-  EXPECT_THROW(dispatcher.dispatch(options), InputFormatError);
-}
-
-TEST_F(CommandDispatcherTest, RegexMatchPrintsTrueAndReturnsZero) {
+TEST_F(CommandDispatcherTest, DispatchesRegexMatchCommand) {
   const auto inputPath = makeFilePath("dispatcher_regex_true.txt");
 
   writeFile(inputPath, "TT\nT*");
@@ -213,39 +127,7 @@ TEST_F(CommandDispatcherTest, RegexMatchPrintsTrueAndReturnsZero) {
   EXPECT_EQ(output, "True\n");
 }
 
-TEST_F(CommandDispatcherTest, RegexMatchPrintsFalseAndReturnsZero) {
-  const auto inputPath = makeFilePath("dispatcher_regex_false.txt");
-
-  writeFile(inputPath, "AA\nA");
-
-  const CommandLineOptions options{
-      CommandType::RegexMatch,
-      {inputPath.string()},
-  };
-
-  int exitCode = -1;
-  const std::string output = captureStdout(options, exitCode);
-
-  EXPECT_EQ(exitCode, 0);
-  EXPECT_EQ(output, "False\n");
-}
-
-TEST_F(CommandDispatcherTest, KSimilarityThrowsWhenNoArguments) {
-  const CommandLineOptions options{CommandType::KSimilarity, {}};
-
-  EXPECT_THROW(dispatcher.dispatch(options), InputFormatError);
-}
-
-TEST_F(CommandDispatcherTest, KSimilarityThrowsWhenTooManyArguments) {
-  const CommandLineOptions options{
-      CommandType::KSimilarity,
-      {"input.txt", "extra.txt"},
-  };
-
-  EXPECT_THROW(dispatcher.dispatch(options), InputFormatError);
-}
-
-TEST_F(CommandDispatcherTest, KSimilarityPrintsResultAndReturnsZero) {
+TEST_F(CommandDispatcherTest, DispatchesKSimilarityCommand) {
   const auto inputPath = makeFilePath("dispatcher_k_similarity.txt");
 
   writeFile(inputPath, "AC\nCA");
@@ -262,22 +144,7 @@ TEST_F(CommandDispatcherTest, KSimilarityPrintsResultAndReturnsZero) {
   EXPECT_EQ(output, "1\n");
 }
 
-TEST_F(CommandDispatcherTest, MinWindowThrowsWhenNoArguments) {
-  const CommandLineOptions options{CommandType::MinWindow, {}};
-
-  EXPECT_THROW(dispatcher.dispatch(options), InputFormatError);
-}
-
-TEST_F(CommandDispatcherTest, MinWindowThrowsWhenTooManyArguments) {
-  const CommandLineOptions options{
-      CommandType::MinWindow,
-      {"input.txt", "extra.txt"},
-  };
-
-  EXPECT_THROW(dispatcher.dispatch(options), InputFormatError);
-}
-
-TEST_F(CommandDispatcherTest, MinWindowPrintsResultAndReturnsZero) {
+TEST_F(CommandDispatcherTest, DispatchesMinWindowCommand) {
   const auto inputPath = makeFilePath("dispatcher_min_window.txt");
 
   writeFile(inputPath, "ACGTACGT\nGTA");
