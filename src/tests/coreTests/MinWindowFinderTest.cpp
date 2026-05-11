@@ -127,3 +127,72 @@ TEST_F(MinWindowFinderTest, AlphabetWithUnicode) {
   EXPECT_EQ(finder.findMinimumWindow("aбвгd", "бв"), "бв");
   EXPECT_EQ(finder.findMinimumWindow("§©™", "©"), "©");
 }
+
+TEST_F(MinWindowFinderTest, LongStringMinimumWindowAtBeginning) {
+  std::string text = "ACGT" + std::string(1000, 'A') + "GGGGGG";
+  EXPECT_EQ(finder.findMinimumWindow(text, "ACGT"), "ACGT");
+}
+
+TEST_F(MinWindowFinderTest, LongStringMinimumWindowAtEnd) {
+  std::string text = std::string(1000, 'G') + "ACGT";
+  EXPECT_EQ(finder.findMinimumWindow(text, "ACGT"), "ACGT");
+}
+
+TEST_F(MinWindowFinderTest, LongStringMinimumWindowInMiddle) {
+  std::string text = std::string(500, 'G') + "A" + std::string(300, 'C') +
+                     "GT" + std::string(500, 'T');
+  EXPECT_EQ(finder.findMinimumWindow(text, "ACGT"),
+            "A" + std::string(300, 'C') + "GT");
+}
+
+TEST_F(MinWindowFinderTest, LongStringChoosesShortWindowNearEnd) {
+  std::string text = "A" + std::string(1000, 'X') + "B" +
+                     std::string(1000, 'Y') + "C" + std::string(1000, 'Z') +
+                     "ABC";
+  EXPECT_EQ(finder.findMinimumWindow(text, "ABC"), "ABC");
+}
+
+TEST_F(MinWindowFinderTest, LongStringWithManyRepeatedRequiredCharacters) {
+  std::string text =
+      std::string(1000, 'A') + std::string(500, 'B') + std::string(1000, 'C');
+
+  EXPECT_EQ(finder.findMinimumWindow(text, "AABBCC"),
+            "AA" + std::string(500, 'B') + "CC");
+}
+
+TEST_F(MinWindowFinderTest, LongStringWithRepeatedCharactersAndNoise) {
+  std::string text = std::string(300, 'X') + "A" + std::string(200, 'Y') + "B" +
+                     std::string(200, 'Z') + "A" + std::string(200, 'W') + "C" +
+                     std::string(300, 'X');
+
+  EXPECT_EQ(finder.findMinimumWindow(text, "AABC"),
+            "A" + std::string(200, 'Y') + "B" + std::string(200, 'Z') + "A" +
+                std::string(200, 'W') + "C");
+}
+
+TEST_F(MinWindowFinderTest, LongStringReturnsEmptyWhenPatternCopiesMissing) {
+  std::string text = std::string(10000, 'A') + std::string(10000, 'B');
+  EXPECT_EQ(finder.findMinimumWindow(text, "AAABC"), "");
+}
+
+TEST_F(MinWindowFinderTest, LongStringAllSameCharacters) {
+  std::string text = std::string(10000, 'A');
+  std::string pattern = std::string(500, 'A');
+
+  EXPECT_EQ(finder.findMinimumWindow(text, pattern), pattern);
+}
+
+TEST_F(MinWindowFinderTest, LongStringLargeAlphabetWindow) {
+  std::string window = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  std::string text = std::string(2000, 'x') + window + std::string(2000, 'y');
+
+  EXPECT_EQ(finder.findMinimumWindow(text, window), window);
+}
+
+TEST_F(MinWindowFinderTest, LongStringLargeAlphabetScrambledPattern) {
+  std::string text = std::string(1000, 'x') + "QWERTYUIOPASDFGHJKLZXCVBNM" +
+                     std::string(1000, 'y');
+
+  EXPECT_EQ(finder.findMinimumWindow(text, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+            "QWERTYUIOPASDFGHJKLZXCVBNM");
+}

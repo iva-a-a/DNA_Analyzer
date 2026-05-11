@@ -199,3 +199,64 @@ TEST_F(KSimilaritySolverTest, DoesNotModifyInputs) {
   EXPECT_EQ(first, first_copy);
   EXPECT_EQ(second, second_copy);
 }
+
+TEST_F(KSimilaritySolverTest, CyrillicAlphabetOneSwap) {
+  EXPECT_EQ(solver.findMinimumSwaps("АБВГ", "АВБГ"), 1);
+}
+
+TEST_F(KSimilaritySolverTest, CyrillicAlphabetCycle) {
+  EXPECT_EQ(solver.findMinimumSwaps("АБВГ", "БВГА"), 3);
+}
+
+TEST_F(KSimilaritySolverTest, GreekAlphabetRepeatedCharacters) {
+  EXPECT_EQ(solver.findMinimumSwaps("ααββγγ", "γγααββ"), 4);
+}
+
+TEST_F(KSimilaritySolverTest, LongUniqueStringReverseOddLength) {
+  EXPECT_EQ(solver.findMinimumSwaps("ABCDEFGHIJKLMNOPQRSTUVWXY",
+                                    "YXWVUTSRQPONMLKJIHGFEDCBA"),
+            12);
+}
+
+TEST_F(KSimilaritySolverTest, LongUniqueStringReverseEvenLength) {
+  EXPECT_EQ(solver.findMinimumSwaps("ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+                                    "ZYXWVUTSRQPONMLKJIHGFEDCBA"),
+            13);
+}
+
+TEST_F(KSimilaritySolverTest, LongRepeatedBlocksSwap) {
+  EXPECT_EQ(solver.findMinimumSwaps("AAAAAAAAAABBBBBBBBBBCCCCCCCCCC",
+                                    "CCCCCCCCCCAAAAAAAAAABBBBBBBBBB"),
+            20);
+}
+
+TEST_F(KSimilaritySolverTest, LongRepeatedBlocksReverse) {
+  EXPECT_EQ(solver.findMinimumSwaps("AAAAABBBBBCCCCCDDDDDEEEEE",
+                                    "EEEEEDDDDDCCCCCBBBBBAAAAA"),
+            10);
+}
+
+TEST_F(KSimilaritySolverTest, LongAlternatingString) {
+  EXPECT_EQ(solver.findMinimumSwaps("ABABABABABAB", "BABABABABABA"), 6);
+}
+
+TEST_F(KSimilaritySolverTest, SeveralOptimalSolutionsSimpleRepeatedLetters) {
+  EXPECT_EQ(solver.findMinimumSwaps("AABBCC", "BBAACC"), 2);
+}
+
+TEST_F(KSimilaritySolverTest, SeveralOptimalSolutionsWithDuplicates) {
+  EXPECT_EQ(solver.findMinimumSwaps("AABBCCDD", "BBAADDCC"), 4);
+}
+
+TEST_F(KSimilaritySolverTest,
+       SeveralOptimalSolutionsNonTrivialRepeatedLetters) {
+  EXPECT_EQ(solver.findMinimumSwaps("AABCBC", "BCABCA"), 3);
+}
+
+TEST_F(KSimilaritySolverTest, SeveralOptimalSolutionsLongRepeatedLetters) {
+  EXPECT_EQ(solver.findMinimumSwaps("AAAABBBBCCCC", "BBBBAAAACCCC"), 4);
+}
+
+TEST_F(KSimilaritySolverTest, SeveralOptimalSolutionsMixedAlphabet) {
+  EXPECT_EQ(solver.findMinimumSwaps("A1A1B2B2", "1A1A2B2B"), 4);
+}

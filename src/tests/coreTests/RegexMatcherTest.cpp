@@ -297,3 +297,207 @@ TEST_F(RegexMatcherTest, EmptyTextWithStarQuestion) {
   EXPECT_TRUE(matcher.matches("", "?*?"));
   EXPECT_TRUE(matcher.matches("", "*?*"));
 }
+
+TEST_F(RegexMatcherTest, LongLiteralExactMatch) {
+  std::string text = std::string(1000, 'A') + std::string(1000, 'C') +
+                     std::string(1000, 'G') + std::string(1000, 'T');
+
+  EXPECT_TRUE(matcher.matches(text, text));
+}
+
+TEST_F(RegexMatcherTest, LongLiteralMismatchAtEnd) {
+  std::string text = std::string(1000, 'A') + std::string(1000, 'C') +
+                     std::string(1000, 'G') + std::string(1000, 'T');
+
+  std::string pattern = text;
+  pattern.back() = 'A';
+
+  EXPECT_FALSE(matcher.matches(text, pattern));
+}
+
+TEST_F(RegexMatcherTest, LongStringMatchedBySingleStar) {
+  std::string text = std::string(5000, 'A') + std::string(5000, 'C') +
+                     std::string(5000, 'G') + std::string(5000, 'T');
+
+  EXPECT_TRUE(matcher.matches(text, "*"));
+}
+
+TEST_F(RegexMatcherTest, LongStringWithStarBetweenRequiredParts) {
+  std::string text =
+      "A" + std::string(10000, 'C') + "G" + std::string(10000, 'T') + "A";
+
+  EXPECT_TRUE(matcher.matches(text, "A*G*A"));
+}
+
+TEST_F(RegexMatcherTest, LongStringWithStarFailsWhenRequiredSuffixMissing) {
+  std::string text =
+      "A" + std::string(10000, 'C') + "G" + std::string(10000, 'T');
+
+  EXPECT_FALSE(matcher.matches(text, "A*G*A"));
+}
+
+TEST_F(RegexMatcherTest, LongStringWithDotPrefixAndLiteralSuffix) {
+  std::string text = std::string(10000, 'A') + "CGT";
+
+  std::string pattern = std::string(10000, '.') + "CGT";
+
+  EXPECT_TRUE(matcher.matches(text, pattern));
+}
+
+TEST_F(RegexMatcherTest, LongStringWithManyQuestionOperators) {
+  std::string text = std::string(1000, 'A');
+  std::string pattern = std::string(1000, '?');
+
+  EXPECT_TRUE(matcher.matches(text, pattern));
+}
+
+TEST_F(RegexMatcherTest, LongStringWithManyQuestionsCanMatchEmpty) {
+  std::string pattern = std::string(1000, '?');
+
+  EXPECT_TRUE(matcher.matches("", pattern));
+}
+
+TEST_F(RegexMatcherTest, LongStringWithQuestionsHasUpperLengthBound) {
+  std::string text = std::string(1001, 'A');
+  std::string pattern = std::string(1000, '?');
+
+  EXPECT_FALSE(matcher.matches(text, pattern));
+}
+
+TEST_F(RegexMatcherTest, LongStringWithPlusRepeatedLiteral) {
+  std::string text = std::string(10000, 'A');
+
+  EXPECT_TRUE(matcher.matches(text, "A+"));
+}
+
+TEST_F(RegexMatcherTest, LongStringWithPlusRepeatedLiteralAndSuffix) {
+  std::string text = std::string(10000, 'A') + "C";
+
+  EXPECT_TRUE(matcher.matches(text, "A+C"));
+}
+
+TEST_F(RegexMatcherTest, LongStringWithPlusRepeatedLiteralFailsOnWrongSuffix) {
+  std::string text = std::string(10000, 'A') + "G";
+
+  EXPECT_FALSE(matcher.matches(text, "A+C"));
+}
+
+TEST_F(RegexMatcherTest, LongStringWithDotPlus) {
+  std::string text =
+      std::string(3000, 'A') + std::string(3000, 'C') + std::string(3000, 'G');
+
+  EXPECT_TRUE(matcher.matches(text, ".+"));
+}
+
+TEST_F(RegexMatcherTest, LongStringWithDotPlusAndSuffix) {
+  std::string text = std::string(3000, 'A') + std::string(3000, 'C') +
+                     std::string(3000, 'G') + "T";
+
+  EXPECT_TRUE(matcher.matches(text, ".+T"));
+}
+
+TEST_F(RegexMatcherTest, LongStringWithDotPlusAndSuffixFails) {
+  std::string text = std::string(3000, 'A') + std::string(3000, 'C') +
+                     std::string(3000, 'G') + "A";
+
+  EXPECT_FALSE(matcher.matches(text, ".+T"));
+}
+
+TEST_F(RegexMatcherTest, LongStringWithMultipleStarsAndRequiredLetters) {
+  std::string text = std::string(2000, 'A') + "C" + std::string(2000, 'G') +
+                     "T" + std::string(2000, 'A');
+
+  EXPECT_TRUE(matcher.matches(text, "*C*T*"));
+}
+
+TEST_F(RegexMatcherTest,
+       LongStringWithMultipleStarsFailsWhenMiddleLiteralMissing) {
+  std::string text = std::string(2000, 'A') + "C" + std::string(2000, 'G') +
+                     std::string(2000, 'A');
+
+  EXPECT_FALSE(matcher.matches(text, "*C*T*"));
+}
+
+TEST_F(RegexMatcherTest, LongStringWithAlternatingCharactersAndPattern) {
+  std::string text;
+  std::string pattern;
+
+  for (int i = 0; i < 1000; ++i) {
+    text += "AC";
+    pattern += "A.";
+  }
+
+  EXPECT_TRUE(matcher.matches(text, pattern));
+}
+
+TEST_F(RegexMatcherTest, LongStringWithAlternatingCharactersMismatch) {
+  std::string text;
+  std::string pattern;
+
+  for (int i = 0; i < 1000; ++i) {
+    text += "AC";
+    pattern += "A.";
+  }
+
+  text.back() = 'G';
+
+  EXPECT_TRUE(matcher.matches(text, pattern));
+}
+
+TEST_F(RegexMatcherTest, LongStringWithAlternatingCharactersLiteralMismatch) {
+  std::string text;
+  std::string pattern;
+
+  for (int i = 0; i < 1000; ++i) {
+    text += "AC";
+    pattern += "AC";
+  }
+
+  pattern.back() = 'G';
+
+  EXPECT_FALSE(matcher.matches(text, pattern));
+}
+
+TEST_F(RegexMatcherTest, LongStringComplexPatternWithStarPlusAndQuestion) {
+  std::string text = std::string(1000, 'A') + std::string(1000, 'B') + "C" +
+                     std::string(1000, 'D') + "E";
+
+  EXPECT_TRUE(matcher.matches(text, "A+B*C?D+E"));
+}
+
+TEST_F(RegexMatcherTest,
+       LongStringComplexPatternFailsWithoutRequiredFinalLiteral) {
+  std::string text = std::string(1000, 'A') + std::string(1000, 'B') + "C" +
+                     std::string(1000, 'D') + "F";
+
+  EXPECT_FALSE(matcher.matches(text, "A+B*C?D+E"));
+}
+
+TEST_F(RegexMatcherTest, LongStringManyOptionalBlocksAroundRequiredLiteral) {
+  std::string text = std::string(500, 'A') + "C" + std::string(500, 'G');
+
+  std::string pattern = std::string(500, '?') + "C" + std::string(500, '?');
+
+  EXPECT_TRUE(matcher.matches(text, pattern));
+}
+
+TEST_F(RegexMatcherTest,
+       LongStringManyOptionalBlocksCannotCoverExtraCharacters) {
+  std::string text = std::string(501, 'A') + "C" + std::string(500, 'G');
+
+  std::string pattern = std::string(500, '?') + "C" + std::string(500, '?');
+
+  EXPECT_FALSE(matcher.matches(text, pattern));
+}
+
+TEST_F(RegexMatcherTest, LongStringStarCanSkipLargePrefixAndSuffix) {
+  std::string text = std::string(5000, 'A') + "CGT" + std::string(5000, 'T');
+
+  EXPECT_TRUE(matcher.matches(text, "*CGT*"));
+}
+
+TEST_F(RegexMatcherTest, LongStringStarCannotCreateMissingLiteral) {
+  std::string text = std::string(5000, 'A') + "CGG" + std::string(5000, 'T');
+
+  EXPECT_FALSE(matcher.matches(text, "*CGT*"));
+}
