@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "../core/common/errors/Errors.hpp"
+#include "../../core/common/errors/Errors.hpp"
 
 TEST(ErrorsTest, DnaAnalyzerErrorStoresMessage) {
   DnaAnalyzerError error("base error");

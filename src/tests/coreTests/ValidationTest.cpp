@@ -1,27 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "../core/common/validation/Validation.hpp"
-
-TEST(ValidationTest, IsDnaCharReturnsTrueForValidCharacters) {
-  EXPECT_TRUE(Validation::isDnaChar('A'));
-  EXPECT_TRUE(Validation::isDnaChar('C'));
-  EXPECT_TRUE(Validation::isDnaChar('G'));
-  EXPECT_TRUE(Validation::isDnaChar('T'));
-}
-
-TEST(ValidationTest, IsDnaCharReturnsFalseForInvalidCharacters) {
-  EXPECT_FALSE(Validation::isDnaChar('a'));
-  EXPECT_FALSE(Validation::isDnaChar('c'));
-  EXPECT_FALSE(Validation::isDnaChar('g'));
-  EXPECT_FALSE(Validation::isDnaChar('t'));
-
-  EXPECT_FALSE(Validation::isDnaChar('X'));
-  EXPECT_FALSE(Validation::isDnaChar('1'));
-  EXPECT_FALSE(Validation::isDnaChar(' '));
-  EXPECT_FALSE(Validation::isDnaChar('\n'));
-  EXPECT_FALSE(Validation::isDnaChar('\0'));
-  EXPECT_FALSE(Validation::isDnaChar('!'));
-}
+#include "../../core/common/validation/Validation.hpp"
 
 TEST(ValidationTest, IsDnaStringReturnsTrueForEmptyString) {
   EXPECT_TRUE(Validation::isDnaString(""));

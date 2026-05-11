@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "../core/common/dnaSequence/DnaSequence.hpp"
-#include "../core/common/errors/Errors.hpp"
+#include "../../core/common/dnaSequence/DnaSequence.hpp"
+#include "../../core/common/errors/Errors.hpp"
 
 TEST(DnaSequenceTest, DefaultConstructorCreatesEmptySequence) {
   DnaSequence sequence;
