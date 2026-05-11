@@ -38,7 +38,7 @@ OBJ_FILES = $(SRC_FILES:%.cpp=$(BUILD_DIR)/%.o)
 MAIN_OBJ_FILE = $(MAIN_FILE:%.cpp=$(BUILD_DIR)/%.o)
 TEST_OBJ_FILES = $(TEST_FILES:%.cpp=$(BUILD_DIR)/%.o)
 
-.PHONY: all clean tests test app library coverage create-test-files clean-test-files run-examples
+.PHONY: all clean tests test app library coverage create-test-files clean-all-files run-examples check-limits
 
 all: library app tests
 
@@ -76,6 +76,18 @@ clean-test-files:
 
 run-examples: app create-test-files
 	./scripts/run_examples.sh
+
+create-large-test-files:
+	./scripts/create_large_test_files.sh
+
+clean-large-test-files:
+	./scripts/clean_large_test_files.sh
+
+check-limits: app
+	./scripts/create_large_test_files.sh
+	./scripts/check_limits.sh
+
+clean-all-files: clean-test-files clean-large-test-files
 
 $(LIB_BIN): $(OBJ_FILES)
 	@mkdir -p $(dir $@)
