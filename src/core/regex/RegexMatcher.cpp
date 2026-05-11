@@ -5,7 +5,7 @@
 bool RegexMatcher::matches(const std::string &text,
                            const std::string &pattern) const {
   PatternParser parser;
-  const auto tokens = parser.parse(pattern);
+  std::vector<PatternToken> tokens = parser.parse(pattern);
 
   const size_t n = text.size();
   const size_t m = tokens.size();
@@ -26,7 +26,7 @@ bool RegexMatcher::calculateCell(
     size_t i, size_t j, const std::string &text,
     const std::vector<PatternToken> &tokens,
     const std::vector<std::vector<bool>> &dp) const {
-  const auto &token = tokens[j - 1];
+  const PatternToken &token = tokens[j - 1];
 
   switch (token.type) {
   case TokenType::Literal:

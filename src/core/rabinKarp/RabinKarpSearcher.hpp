@@ -11,9 +11,6 @@ public:
                                 const std::string &pattern) const;
 
 private:
-  static const std::uint64_t _p = 257ULL;
-  static const std::uint64_t _m = 1000000007ULL;
-
   std::uint64_t calculateHash(const std::string &text) const;
   std::uint64_t recalculateHash(std::uint64_t oldHash, char oldChar,
                                 char newChar, std::uint64_t highestPower) const;

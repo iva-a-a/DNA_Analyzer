@@ -1,5 +1,8 @@
 #include "RabinKarpSearcher.hpp"
 
+inline static const std::uint64_t _p = 257ULL;
+static const std::uint64_t _m = 1000000007ULL;
+
 std::vector<std::size_t>
 RabinKarpSearcher::find(const std::string &text,
                         const std::string &pattern) const {
@@ -13,13 +16,13 @@ RabinKarpSearcher::find(const std::string &text,
 
   std::uint64_t patternHash = calculateHash(pattern);
   std::uint64_t windowHash = calculateHash(text.substr(0, patternLength));
-
   std::uint64_t highestPower = calculateHighestPower(patternLength);
 
   for (std::size_t left = 0; left <= textLength - patternLength; ++left) {
     if (windowHash == patternHash && isMatch(text, left, pattern)) {
       positions.push_back(left);
     }
+
     if (left < textLength - patternLength) {
       windowHash = recalculateHash(windowHash, text[left],
                                    text[left + patternLength], highestPower);
@@ -45,11 +48,13 @@ RabinKarpSearcher::recalculateHash(std::uint64_t oldHash, char oldChar,
                                    std::uint64_t highestPower) const {
   auto oldValue = static_cast<unsigned char>(oldChar) + 1;
   auto newValue = static_cast<unsigned char>(newChar) + 1;
-  std::uint64_t removed = (oldValue * highestPower) % _m;
 
+  std::uint64_t removed = (oldValue * highestPower) % _m;
   std::uint64_t newHash = (oldHash + _m - removed) % _m;
+
   newHash = (newHash * _p) % _m;
   newHash = (newHash + newValue) % _m;
+
   return newHash;
 }
 

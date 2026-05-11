@@ -42,17 +42,21 @@ void PatternParser::validateSyntax(const std::string &pattern) const {
   if (pattern.empty()) {
     throw ValidationError("Pattern cannot be empty");
   }
+
   for (size_t i = 0; i < pattern.size(); ++i) {
     char c = pattern[i];
+
     if (!isValidPatternChar(c)) {
       throw ValidationError("Invalid character in pattern");
     }
+
     if (c == '+') {
       if (i == 0) {
         throw ValidationError(
             "'+' cannot be the first character in the pattern");
       }
       char prev = pattern[i - 1];
+
       if (prev == '*' || prev == '?' || prev == '+') {
         throw ValidationError("'+' cannot follow '*', '?', or another '+'");
       }

@@ -4,8 +4,9 @@
 
 #include "../../core/common/errors/Errors.hpp"
 
-AlignmentInput
-InputParser::parseAlignmentInput(const std::vector<std::string> &lines) {
+namespace InputParser {
+
+AlignmentInput parseAlignmentInput(const std::vector<std::string> &lines) {
   if (lines.size() != 3) {
     throw InputFormatError("Alignment input must consist of exactly 3 lines");
   }
@@ -21,42 +22,47 @@ InputParser::parseAlignmentInput(const std::vector<std::string> &lines) {
 
   return {scoring, lines[1], lines[2]};
 }
-ExactSearchInput
-InputParser::parseExactSearchInput(const std::string &text,
-                                   const std::string &pattern) {
+
+ExactSearchInput parseExactSearchInput(const std::string &text,
+                                       const std::string &pattern) {
   if (text.empty() || text.size() > 10000) {
     throw InputFormatError("Text cannot be empty or exceed 10000 characters");
   }
+
   if (pattern.empty() || pattern.size() > 100) {
     throw InputFormatError("Pattern cannot be empty or exceed 100 characters");
   }
+
   if (pattern.size() > text.size()) {
     throw InputFormatError("Pattern length cannot exceed text length");
   }
+
   return {text, pattern};
 }
 
-KSimilarityInput
-InputParser::parseKSimilarityInput(const std::vector<std::string> &lines) {
+KSimilarityInput parseKSimilarityInput(const std::vector<std::string> &lines) {
   if (lines.size() != 2) {
     throw InputFormatError(
         "K-similarity input must consist of exactly 2 lines");
   }
+
   return {lines[0], lines[1]};
 }
 
-MinWindowInput
-InputParser::parseMinWindowInput(const std::vector<std::string> &lines) {
+MinWindowInput parseMinWindowInput(const std::vector<std::string> &lines) {
   if (lines.size() != 2) {
     throw InputFormatError("Min window input must consist of exactly 2 lines");
   }
+
   return {lines[0], lines[1]};
 }
 
-RegexMatchInput
-InputParser::parseRegexMatchInput(const std::vector<std::string> &lines) {
+RegexMatchInput parseRegexMatchInput(const std::vector<std::string> &lines) {
   if (lines.size() != 2) {
     throw InputFormatError("Regex match input must consist of exactly 2 lines");
   }
+
   return {lines[0], lines[1]};
 }
+
+} // namespace InputParser

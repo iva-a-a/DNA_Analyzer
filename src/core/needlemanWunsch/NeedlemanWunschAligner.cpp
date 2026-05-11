@@ -7,6 +7,7 @@ int NeedlemanWunschAligner::computeScore(const std::string &first,
                                          const ScoringScheme &scoring) const {
   std::vector<std::vector<int>> scoreMatrix =
       buildScoreMatrix(first, second, scoring);
+
   return scoreMatrix[first.size()][second.size()];
 }
 
@@ -39,12 +40,14 @@ NeedlemanWunschAligner::buildScoreMatrix(const std::string &first,
   for (std::size_t j = 0; j <= m; ++j) {
     scoreMatrix[0][j] = static_cast<int>(j) * scoring.gapScore;
   }
+
   for (std::size_t i = 1; i <= n; ++i) {
     for (std::size_t j = 1; j <= m; ++j) {
       int diagonal = scoreMatrix[i - 1][j - 1] +
                      scorePair(first[i - 1], second[j - 1], scoring);
       int up = scoreMatrix[i - 1][j] + scoring.gapScore;
       int left = scoreMatrix[i][j - 1] + scoring.gapScore;
+
       scoreMatrix[i][j] = std::max({diagonal, up, left});
     }
   }
@@ -62,17 +65,17 @@ AlignmentResult NeedlemanWunschAligner::traceback(
   std::string alignedFirst;
   std::string alignedSecond;
   std::string matchLine;
-
   std::size_t i = first.size();
   std::size_t j = second.size();
 
   while (i > 0 || j > 0) {
-
     int currentScore = scoreMatrix[i][j];
+
     if (i > 0 && currentScore == scoreMatrix[i - 1][j] + scoring.gapScore) {
       alignedFirst.push_back(first[i - 1]);
       alignedSecond.push_back('-');
       matchLine.push_back(' ');
+
       --i;
     } else if (i > 0 && j > 0 &&
                currentScore ==
@@ -81,6 +84,7 @@ AlignmentResult NeedlemanWunschAligner::traceback(
       alignedFirst.push_back(first[i - 1]);
       alignedSecond.push_back(second[j - 1]);
       matchLine.push_back(buildMatchChar(first[i - 1], second[j - 1]));
+
       --i;
       --j;
     } else if (j > 0 &&
@@ -88,6 +92,7 @@ AlignmentResult NeedlemanWunschAligner::traceback(
       alignedFirst.push_back('-');
       alignedSecond.push_back(second[j - 1]);
       matchLine.push_back(' ');
+
       --j;
     }
   }
