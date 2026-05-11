@@ -2,7 +2,7 @@
 #include "cli/parser/ArgumentParser.hpp"
 
 int main(int argc, char *argv[]) {
-  auto options = ArgumentParser::parse(argc, argv);
+  CommandLineOptions options = ArgumentParser::parse(argc, argv);
   CommandDispatcher dispatcher;
   return dispatcher.dispatch(options);
 }
