@@ -1,7 +1,7 @@
 #include "RabinKarpSearcher.hpp"
 
-inline static const std::uint64_t _p = 257ULL;
-static const std::uint64_t _m = 1000000007ULL;
+inline static const std::uint64_t BASE = 257ULL;
+inline static const std::uint64_t MOD = 1000000007ULL;
 
 std::vector<std::size_t>
 RabinKarpSearcher::find(const std::string &text,
@@ -36,7 +36,7 @@ std::uint64_t RabinKarpSearcher::calculateHash(const std::string &text) const {
 
   for (char c : text) {
     auto value = static_cast<unsigned char>(c) + 1;
-    hashValue = (hashValue * _p + value) % _m;
+    hashValue = (hashValue * BASE + value) % MOD;
   }
 
   return hashValue;
@@ -49,11 +49,11 @@ RabinKarpSearcher::recalculateHash(std::uint64_t oldHash, char oldChar,
   auto oldValue = static_cast<unsigned char>(oldChar) + 1;
   auto newValue = static_cast<unsigned char>(newChar) + 1;
 
-  std::uint64_t removed = (oldValue * highestPower) % _m;
-  std::uint64_t newHash = (oldHash + _m - removed) % _m;
+  std::uint64_t removed = (oldValue * highestPower) % MOD;
+  std::uint64_t newHash = (oldHash + MOD - removed) % MOD;
 
-  newHash = (newHash * _p) % _m;
-  newHash = (newHash + newValue) % _m;
+  newHash = (newHash * BASE) % MOD;
+  newHash = (newHash + newValue) % MOD;
 
   return newHash;
 }
@@ -77,7 +77,7 @@ std::uint64_t
 RabinKarpSearcher::calculateHighestPower(std::size_t length) const {
   std::uint64_t power = 1;
   for (std::size_t i = 0; i < length - 1; ++i) {
-    power = (power * _p) % _m;
+    power = (power * BASE) % MOD;
   }
   return power;
 }
