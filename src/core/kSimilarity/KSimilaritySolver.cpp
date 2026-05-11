@@ -1,7 +1,5 @@
 #include "KSimilaritySolver.hpp"
 
-#include <algorithm>
-
 int KSimilaritySolver::findMinimumSwaps(const std::string &first,
                                         const std::string &second) const {
   if (!isAnagram(first, second)) {

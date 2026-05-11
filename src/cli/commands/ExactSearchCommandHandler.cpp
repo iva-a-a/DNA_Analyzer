@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "../../app/exactSearchService/ExactSearchService.hpp"
 #include "../../io/formatter/OutputFormatter.hpp"
 #include "CommandArguments.hpp"
 

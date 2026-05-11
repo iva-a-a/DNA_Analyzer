@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../app/exactSearchService/ExactSearchService.hpp"
 #include "ICommandHandler.hpp"
 
 class ExactSearchCommandHandler : public ICommandHandler {
