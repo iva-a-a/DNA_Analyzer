@@ -8,13 +8,17 @@
 ExactSearchResult
 ExactSearchService::run(const std::string &textFilePath,
                         const std::string &patternFilePath) const {
-  auto textLines = FileReader::readLine(textFilePath);
-  auto patternLines = FileReader::readLine(patternFilePath);
-  auto input = InputParser::parseExactSearchInput(textLines, patternLines);
+  std::string textLines = FileReader::readLine(textFilePath);
+  std::string patternLines = FileReader::readLine(patternFilePath);
+
+  ExactSearchInput input =
+      InputParser::parseExactSearchInput(textLines, patternLines);
+
   auto dnaText = DnaSequence(input.text);
   auto dnaPattern = DnaSequence(input.pattern);
   auto searcher = RabinKarpSearcher();
   ExactSearchResult result;
+
   result.positions = searcher.find(dnaText.value(), dnaPattern.value());
 
   return result;

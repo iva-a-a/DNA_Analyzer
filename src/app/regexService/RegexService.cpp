@@ -6,10 +6,11 @@
 #include "../../io/reader/FileReader.hpp"
 
 bool RegexService::run(const std::string &inputFilePath) const {
-  auto inputLines = FileReader::readLines(inputFilePath);
-  auto input = InputParser::parseRegexMatchInput(inputLines);
+  std::vector<std::string> inputLines = FileReader::readLines(inputFilePath);
+  RegexMatchInput input = InputParser::parseRegexMatchInput(inputLines);
+
   auto dnaText = DnaSequence(input.sequence);
-  auto dnaPattern = DnaSequence(input.pattern);
   auto matcher = RegexMatcher();
-  return matcher.matches(dnaText.value(), dnaPattern.value());
+
+  return matcher.matches(dnaText.value(), input.pattern);
 }

@@ -1,7 +1,6 @@
 #include "KSimilaritySolver.hpp"
 
 #include <algorithm>
-#include <climits>
 
 int KSimilaritySolver::findMinimumSwaps(const std::string &first,
                                         const std::string &second) const {
@@ -26,7 +25,6 @@ bool KSimilaritySolver::isAnagram(const std::string &first,
   for (char c : first) {
     charCount[c]++;
   }
-
   for (char c : second) {
     charCount[c]--;
   }
@@ -56,7 +54,7 @@ int KSimilaritySolver::solve(std::string &current, const std::string &target,
     i++;
   }
 
-  int best = INT_MAX;
+  int best = std::numeric_limits<int>::max();
 
   for (size_t j = i + 1; j < current.size(); ++j) {
     if (current[j] == target[i] && current[j] != target[j]) {

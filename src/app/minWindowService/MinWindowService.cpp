@@ -6,10 +6,12 @@
 #include "../../io/reader/FileReader.hpp"
 
 std::string MinWindowService::run(const std::string &inputFilePath) const {
-  auto inputLines = FileReader::readLines(inputFilePath);
-  auto input = InputParser::parseMinWindowInput(inputLines);
+  std::vector<std::string> inputLines = FileReader::readLines(inputFilePath);
+  MinWindowInput input = InputParser::parseMinWindowInput(inputLines);
+
   auto dnaSource = DnaSequence(input.source);
   auto dnaTarget = DnaSequence(input.target);
   auto finder = MinWindowFinder();
+
   return finder.findMinimumWindow(dnaSource.value(), dnaTarget.value());
 }
