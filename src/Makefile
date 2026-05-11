@@ -38,7 +38,7 @@ OBJ_FILES = $(SRC_FILES:%.cpp=$(BUILD_DIR)/%.o)
 MAIN_OBJ_FILE = $(MAIN_FILE:%.cpp=$(BUILD_DIR)/%.o)
 TEST_OBJ_FILES = $(TEST_FILES:%.cpp=$(BUILD_DIR)/%.o)
 
-.PHONY: all clean tests test app library coverage
+.PHONY: all clean tests test app library coverage create-test-files clean-test-files run-examples
 
 all: library app tests
 
@@ -67,6 +67,15 @@ clean:
 	$(RM) $(BUILD_DIR)
 	$(RM) $(GCOV_DIR)
 	$(RM) *.gcda *.gcno *.gcov
+
+create-test-files:
+	./scripts/create_test_files.sh
+
+clean-test-files:
+	./scripts/clean_test_files.sh
+
+run-examples: app create-test-files
+	./scripts/run_examples.sh
 
 $(LIB_BIN): $(OBJ_FILES)
 	@mkdir -p $(dir $@)
