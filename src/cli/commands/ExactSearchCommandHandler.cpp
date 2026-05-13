@@ -6,6 +6,22 @@
 #include "../../io/formatter/OutputFormatter.hpp"
 #include "CommandArguments.hpp"
 
+namespace {
+
+std::vector<std::size_t>
+toOneBasedPositions(const std::vector<std::size_t> &positions) {
+  std::vector<std::size_t> result;
+  result.reserve(positions.size());
+
+  for (auto position : positions) {
+    result.push_back(position + 1);
+  }
+
+  return result;
+}
+
+} // namespace
+
 int ExactSearchCommandHandler::run(const CommandLineOptions &options) const {
   CommandArgument::requireCount(
       options, 2,
@@ -16,7 +32,10 @@ int ExactSearchCommandHandler::run(const CommandLineOptions &options) const {
   const std::string &patternFilePath = options.arguments[1];
 
   ExactSearchService service;
+
   ExactSearchResult result = service.run(textFilePath, patternFilePath);
+
+  result.positions = toOneBasedPositions(result.positions);
 
   std::cout << OutputFormatter::formatPositions(result) << std::endl;
 

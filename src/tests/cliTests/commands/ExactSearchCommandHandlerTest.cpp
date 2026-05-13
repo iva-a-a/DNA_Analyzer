@@ -92,7 +92,7 @@ TEST_F(ExactSearchCommandHandlerTest, PrintsPositionsAndReturnsZero) {
   const std::string output = captureStdout(options, exitCode);
 
   EXPECT_EQ(exitCode, 0);
-  EXPECT_EQ(output, "0 2\n");
+  EXPECT_EQ(output, "1 3\n");
 }
 
 TEST_F(ExactSearchCommandHandlerTest, PrintsEmptyLineWhenNoMatches) {
