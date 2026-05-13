@@ -124,7 +124,13 @@ TEST_F(KSimilarityServiceTest, ThrowsWhenSourceContainsInvalidDnaCharacters) {
 
   EXPECT_THROW(service.run(path.string()), ValidationError);
 }
+TEST_F(KSimilarityServiceTest, ThrowsWhenStringsAreNotAnagrams) {
+  const auto path = makeFilePath("k_similarity_not_anagrams.txt");
 
+  writeFile(path, "ACGT\nTGCC");
+
+  EXPECT_THROW(service.run(path.string()), InputFormatError);
+}
 TEST_F(KSimilarityServiceTest, ThrowsWhenTargetContainsInvalidDnaCharacters) {
   const auto path = makeFilePath("k_similarity_invalid_target.txt");
 
