@@ -36,7 +36,7 @@ std::vector<std::string> DnaDataset::species() const {
 }
 
 int DnaDataset::classCount() const {
-  std::set<int> uniqueClasses =
-      std::set<int>(classIds().begin(), classIds().end());
-  return uniqueClasses.size();
+  const std::vector<int> ids = classIds();
+  const std::set<int> uniqueClasses(ids.begin(), ids.end());
+  return static_cast<int>(uniqueClasses.size());
 }

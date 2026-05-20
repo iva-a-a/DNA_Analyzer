@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../data/DnaDataset.hpp"
+#include "../DnaDataset.hpp"
 
 namespace DatasetValidator {
 
