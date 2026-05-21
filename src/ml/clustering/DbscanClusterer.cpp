@@ -5,16 +5,21 @@
 #include "../common/Errors.hpp"
 #include "Distance.hpp"
 
-DbscanClusterer::DbscanClusterer(double eps, int minPoints)
-    : _eps(eps), _minPoints(minPoints) {}
+DbscanClusterer::DbscanClusterer(std::shared_ptr<IEpsProvider> epsProvider,
+                                 int minPoints)
+    : _epsProvider(std::move(epsProvider)), _minPoints(minPoints) {}
 
 std::string DbscanClusterer::name() const { return "DBSCAN"; }
 
 ClusteringResult
 DbscanClusterer::fitPredict(const std::vector<std::vector<double>> &data,
-                            int expectedClusterCount) const {
-  (void)expectedClusterCount;
-  validateInput(data);
+                            const ClusteringContext &context) const {
+  if (!_epsProvider) {
+    throw ClusteringError("DBSCAN eps provider is not set");
+  }
+
+  const double eps = _epsProvider->epsForKmerLength(context.kmerLength);
+  validateInput(data, eps);
 
   ClusteringResult result;
   result.labels.resize(data.size(), -1);
@@ -27,12 +32,12 @@ DbscanClusterer::fitPredict(const std::vector<std::vector<double>> &data,
     }
 
     visited[i] = true;
-    std::vector<int> neighbors = regionQuery(data, i);
+    std::vector<int> neighbors = regionQuery(data, i, eps);
 
     if (neighbors.size() < static_cast<std::size_t>(_minPoints)) {
       result.labels[i] = -1;
     } else {
-      expandCluster(data, i, neighbors, clusterId, result.labels, visited);
+      expandCluster(data, i, neighbors, clusterId, result.labels, visited, eps);
       clusterId++;
     }
   }
@@ -41,12 +46,12 @@ DbscanClusterer::fitPredict(const std::vector<std::vector<double>> &data,
 }
 
 void DbscanClusterer::validateInput(
-    const std::vector<std::vector<double>> &data) const {
+    const std::vector<std::vector<double>> &data, double eps) const {
   if (data.empty()) {
     throw ClusteringError("DBSCAN input data is empty");
   }
 
-  if (_eps <= 0.0) {
+  if (eps <= 0.0) {
     throw ClusteringError("DBSCAN eps must be positive");
   }
 
@@ -69,11 +74,11 @@ void DbscanClusterer::validateInput(
 
 std::vector<int>
 DbscanClusterer::regionQuery(const std::vector<std::vector<double>> &data,
-                             std::size_t pointIndex) const {
+                             std::size_t pointIndex, double eps) const {
   std::vector<int> neighbors;
 
   for (std::size_t i = 0; i < data.size(); ++i) {
-    if (Distance::euclidean(data[pointIndex], data[i]) <= _eps) {
+    if (Distance::euclidean(data[pointIndex], data[i]) <= eps) {
       neighbors.push_back(static_cast<int>(i));
     }
   }
@@ -84,7 +89,7 @@ DbscanClusterer::regionQuery(const std::vector<std::vector<double>> &data,
 void DbscanClusterer::expandCluster(
     const std::vector<std::vector<double>> &data, std::size_t pointIndex,
     const std::vector<int> &neighbors, int clusterId, std::vector<int> &labels,
-    std::vector<bool> &visited) const {
+    std::vector<bool> &visited, double eps) const {
   labels[pointIndex] = clusterId;
   std::queue<int> neighborsQueue;
 
@@ -98,7 +103,7 @@ void DbscanClusterer::expandCluster(
 
     if (!visited[currentIndex]) {
       visited[currentIndex] = true;
-      std::vector<int> currentNeighbors = regionQuery(data, currentIndex);
+      std::vector<int> currentNeighbors = regionQuery(data, currentIndex, eps);
 
       if (currentNeighbors.size() >= static_cast<std::size_t>(_minPoints)) {
         for (int neighbor : currentNeighbors) {
