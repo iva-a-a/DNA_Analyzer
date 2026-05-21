@@ -14,7 +14,8 @@ std::string KMeansClusterer::name() const { return "KMeans"; }
 
 ClusteringResult
 KMeansClusterer::fitPredict(const std::vector<std::vector<double>> &data,
-                            int expectedClusterCount) const {
+                            const ClusteringContext &context) const {
+  int expectedClusterCount = context.expectedClusterCount;
   validateInput(data, expectedClusterCount);
 
   std::vector<std::vector<double>> centroids =

@@ -7,7 +7,7 @@ public:
   KMedoidsClusterer(int maxIterations, int randomSeed);
   std::string name() const override;
   ClusteringResult fitPredict(const std::vector<std::vector<double>> &data,
-                              int expectedClusterCount) const override;
+                              const ClusteringContext &context) const override;
 
 private:
   int _maxIterations;

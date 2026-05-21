@@ -14,7 +14,8 @@ std::string KMedoidsClusterer::name() const { return "KMedoids"; }
 
 ClusteringResult
 KMedoidsClusterer::fitPredict(const std::vector<std::vector<double>> &data,
-                              int expectedClusterCount) const {
+                              const ClusteringContext &context) const {
+  int expectedClusterCount = context.expectedClusterCount;
   validateInput(data, expectedClusterCount);
 
   std::vector<std::size_t> medoidIndices =
