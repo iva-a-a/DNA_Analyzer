@@ -33,6 +33,12 @@ public:
       : MlPipelineError(message) {}
 };
 
+class MetricsError : public MlPipelineError {
+public:
+  explicit MetricsError(const std::string &message)
+      : MlPipelineError(message) {}
+};
+
 class ReportWriteError : public MlPipelineError {
 public:
   explicit ReportWriteError(const std::string &message)
