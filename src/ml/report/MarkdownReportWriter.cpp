@@ -4,6 +4,7 @@
 #include <iomanip>
 
 #include "../common/Errors.hpp"
+#include "ClusteringReportAnalyzer.hpp"
 
 void MarkdownReportWriter::write(const std::string &outputPath,
                                  const ClusteringReport &report) const {
@@ -70,28 +71,21 @@ void MarkdownReportWriter::notes(std::ofstream &outFile) const {
 
 void MarkdownReportWriter::conclusions(std::ofstream &outFile,
                                        const ClusteringReport &report) const {
-  int bestKmerLength = report.rows.front().kmerLength;
-  std::string bestAlgorithm = report.rows.front().scores.front().algorithmName;
-  double bestRandIndex = report.rows.front().scores.front().randIndex;
-
-  for (const auto &row : report.rows) {
-    for (const auto &score : row.scores) {
-      if (score.randIndex > bestRandIndex) {
-        bestRandIndex = score.randIndex;
-        bestAlgorithm = score.algorithmName;
-        bestKmerLength = row.kmerLength;
-      }
-    }
+  if (report.rows.empty()) {
+    return;
   }
+
+  const ClusteringReportAnalysis analysis =
+      ClusteringReportAnalyzer::analyze(report);
 
   outFile << "\n";
   outFile << "## Conclusions\n\n";
 
   outFile << std::fixed << std::setprecision(4);
 
-  outFile << "- The best result was achieved by " << bestAlgorithm
-          << " with k-mer length " << bestKmerLength
-          << ", Rand Index = " << bestRandIndex << ".\n";
+  outFile << "- The best result was achieved by " << analysis.bestAlgorithm
+          << " with k-mer length " << analysis.bestKmerLength
+          << ", Rand Index = " << analysis.bestRandIndex << ".\n";
 
   outFile << "- Short k-mers produced better clustering quality. In this "
              "experiment, the strongest results were obtained for small "
