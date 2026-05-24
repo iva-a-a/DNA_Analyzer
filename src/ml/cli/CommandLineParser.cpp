@@ -1,7 +1,6 @@
 #include "CommandLineParser.hpp"
 
 #include <iostream>
-#include <ostream>
 #include <stdexcept>
 
 namespace {
