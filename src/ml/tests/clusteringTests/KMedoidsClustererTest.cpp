@@ -178,3 +178,44 @@ TEST(KMedoidsClustererTest, FitPredictClustersCollinearGroupsAfterMedoidSwap) {
   EXPECT_EQ(result.labels[0], result.labels[1]);
   EXPECT_NE(result.labels[0], result.labels[2]);
 }
+
+TEST(KMedoidsClustererTest, DoesNotSwapMedoidWhenCandidateDoesNotImproveCost) {
+  KMedoidsClusterer clusterer(100, 42);
+
+  std::vector<std::vector<double>> data = {
+      {0.0},
+      {0.0},
+      {0.0},
+  };
+
+  const ClusteringContext context = makeContext(1);
+
+  ClusteringResult result = clusterer.fitPredict(data, context);
+
+  ASSERT_EQ(result.labels.size(), data.size());
+
+  EXPECT_EQ(result.labels[0], 0);
+  EXPECT_EQ(result.labels[1], 0);
+  EXPECT_EQ(result.labels[2], 0);
+}
+
+TEST(KMedoidsClustererTest, ImprovesMedoidWhenBetterPointExistsInCluster) {
+  KMedoidsClusterer clusterer(100, 0);
+
+  std::vector<std::vector<double>> data = {
+      {0.0},
+      {10.0},
+      {11.0},
+      {12.0},
+  };
+
+  const ClusteringContext context = makeContext(2);
+
+  ClusteringResult result = clusterer.fitPredict(data, context);
+
+  ASSERT_EQ(result.labels.size(), data.size());
+
+  EXPECT_NE(result.labels[0], result.labels[1]);
+  EXPECT_EQ(result.labels[1], result.labels[2]);
+  EXPECT_EQ(result.labels[2], result.labels[3]);
+}

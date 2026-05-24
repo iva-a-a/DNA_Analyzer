@@ -162,3 +162,30 @@ TEST(KMeansClustererTest, UsesAllClusterIdsForWellSeparatedData) {
   std::set<int> uniqueLabels(result.labels.begin(), result.labels.end());
   EXPECT_EQ(uniqueLabels.size(), 2U);
 }
+
+TEST(KMeansClustererTest, KeepsPreviousCentroidWhenClusterGetsNoPoints) {
+  KMeansClusterer clusterer(10, 42);
+
+  std::vector<std::vector<double>> data = {
+      {0.0},
+      {0.0},
+      {10.0},
+  };
+
+  const ClusteringContext context = makeContext(3);
+
+  ClusteringResult result = clusterer.fitPredict(data, context);
+
+  ASSERT_EQ(result.labels.size(), data.size());
+
+  for (int label : result.labels) {
+    EXPECT_GE(label, 0);
+    EXPECT_LT(label, context.expectedClusterCount);
+  }
+
+  EXPECT_EQ(result.labels[0], result.labels[1]);
+  EXPECT_NE(result.labels[0], result.labels[2]);
+
+  std::set<int> uniqueLabels(result.labels.begin(), result.labels.end());
+  EXPECT_LT(uniqueLabels.size(), 3U);
+}
