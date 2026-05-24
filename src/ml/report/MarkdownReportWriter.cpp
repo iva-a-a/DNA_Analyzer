@@ -13,9 +13,25 @@ void MarkdownReportWriter::write(const std::string &outputPath,
     throw ReportWriteError("Failed to open output file: " + outputPath);
   }
 
-  outFile << "# DNA Clustering Report\n\n";
-  outFile << "## Rand Index Results\n\n";
+  header(outFile);
+  outFile << "\n";
 
+  resultTable(outFile, report);
+  outFile << "\n";
+
+  notes(outFile);
+  outFile << "\n";
+
+  conclusions(outFile, report);
+}
+
+void MarkdownReportWriter::header(std::ofstream &outFile) const {
+  outFile << "# DNA Clustering Report\n\n";
+  outFile << "## Rand Index Results\n";
+}
+
+void MarkdownReportWriter::resultTable(std::ofstream &outFile,
+                                       const ClusteringReport &report) const {
   if (report.rows.empty()) {
     outFile << "No results available.\n";
     return;
@@ -42,11 +58,53 @@ void MarkdownReportWriter::write(const std::string &outputPath,
     }
     outFile << "\n";
   }
-  outFile << "\n";
+}
 
+void MarkdownReportWriter::notes(std::ofstream &outFile) const {
   outFile << "## Notes\n\n";
   outFile << "- Rand Index compares predicted cluster labels with true class "
              "labels.\n";
   outFile << "- DBSCAN noise points are treated as cluster `-1`.\n";
-  outFile << "- Higher Rand Index means better agreement with true classes.\n";
+  outFile << "- Higher Rand Index means better agreement with true classes.";
+}
+
+void MarkdownReportWriter::conclusions(std::ofstream &outFile,
+                                       const ClusteringReport &report) const {
+  int bestKmerLength = report.rows.front().kmerLength;
+  std::string bestAlgorithm = report.rows.front().scores.front().algorithmName;
+  double bestRandIndex = report.rows.front().scores.front().randIndex;
+
+  for (const auto &row : report.rows) {
+    for (const auto &score : row.scores) {
+      if (score.randIndex > bestRandIndex) {
+        bestRandIndex = score.randIndex;
+        bestAlgorithm = score.algorithmName;
+        bestKmerLength = row.kmerLength;
+      }
+    }
+  }
+
+  outFile << "\n";
+  outFile << "## Conclusions\n\n";
+
+  outFile << std::fixed << std::setprecision(4);
+
+  outFile << "- The best result was achieved by " << bestAlgorithm
+          << " with k-mer length " << bestKmerLength
+          << ", Rand Index = " << bestRandIndex << ".\n";
+
+  outFile << "- Short k-mers produced better clustering quality. In this "
+             "experiment, the strongest results were obtained for small "
+             "k-mer lengths, especially k = 1 and k = 2.\n";
+
+  outFile << "- As k-mer length increased, the quality generally decreased. "
+             "This is likely because longer k-mers create a larger and more "
+             "sparse feature space, so sequences have fewer shared features.\n";
+
+  outFile << "- KMeans and KMedoids were more stable than DBSCAN across "
+             "different k-mer lengths.\n";
+
+  outFile << "- DBSCAN was more sensitive to the choice of k-mer length and "
+             "eps parameter, because it relies on density in the feature "
+             "space rather than a predefined number of clusters.";
 }
