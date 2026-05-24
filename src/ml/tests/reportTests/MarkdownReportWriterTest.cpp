@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include "../../common/Errors.hpp"
 #include "../../report/MarkdownReportWriter.hpp"
@@ -36,7 +37,8 @@ ClusteringReportRow makeRow(int kmerLength,
 
 } // namespace
 
-TEST(MarkdownReportWriterTest, WritesReportWithHeaderAndScores) {
+TEST(MarkdownReportWriterTest,
+     WritesReportWithHeaderScoresNotesAndConclusions) {
   const std::string outputPath = "test_clustering_report.md";
 
   ClusteringReport report;
@@ -71,7 +73,23 @@ TEST(MarkdownReportWriterTest, WritesReportWithHeaderAndScores) {
       "\n"
       "- Rand Index compares predicted cluster labels with true class labels.\n"
       "- DBSCAN noise points are treated as cluster `-1`.\n"
-      "- Higher Rand Index means better agreement with true classes.\n";
+      "- Higher Rand Index means better agreement with true classes.\n"
+      "\n"
+      "## Conclusions\n"
+      "\n"
+      "- The best result was achieved by KMedoids with k-mer length 1, "
+      "Rand Index = 0.7353.\n"
+      "- Short k-mers produced better clustering quality. In this experiment, "
+      "the strongest results were obtained for small k-mer lengths, especially "
+      "k = 1 and k = 2.\n"
+      "- As k-mer length increased, the quality generally decreased. This is "
+      "likely because longer k-mers create a larger and more sparse feature "
+      "space, so sequences have fewer shared features.\n"
+      "- KMeans and KMedoids were more stable than DBSCAN across different "
+      "k-mer lengths.\n"
+      "- DBSCAN was more sensitive to the choice of k-mer length and eps "
+      "parameter, because it relies on density in the feature space rather "
+      "than a predefined number of clusters.";
 
   EXPECT_EQ(content, expected);
 
@@ -88,11 +106,18 @@ TEST(MarkdownReportWriterTest, WritesMessageWhenReportIsEmpty) {
 
   const std::string content = readFile(outputPath);
 
-  const std::string expected = "# DNA Clustering Report\n"
-                               "\n"
-                               "## Rand Index Results\n"
-                               "\n"
-                               "No results available.\n";
+  const std::string expected =
+      "# DNA Clustering Report\n"
+      "\n"
+      "## Rand Index Results\n"
+      "\n"
+      "No results available.\n"
+      "\n"
+      "## Notes\n"
+      "\n"
+      "- Rand Index compares predicted cluster labels with true class labels.\n"
+      "- DBSCAN noise points are treated as cluster `-1`.\n"
+      "- Higher Rand Index means better agreement with true classes.\n";
 
   EXPECT_EQ(content, expected);
 
@@ -148,6 +173,36 @@ TEST(MarkdownReportWriterTest, FormatsRandIndexWithFourDecimalPlaces) {
   const std::string content = readFile(outputPath);
 
   EXPECT_NE(content.find("| 1 | 1.0000 | 0.1235 | 0.7000 |"),
+            std::string::npos);
+  EXPECT_NE(content.find("Rand Index = 1.0000"), std::string::npos);
+
+  std::remove(outputPath.c_str());
+}
+
+TEST(MarkdownReportWriterTest, ConclusionsUseBestScoreFromReport) {
+  const std::string outputPath = "test_conclusions_best_score_report.md";
+
+  ClusteringReport report;
+  report.rows.push_back(makeRow(1, {
+                                       makeScore("KMeans", 0.6),
+                                       makeScore("DBSCAN", 0.5),
+                                       makeScore("KMedoids", 0.7),
+                                   }));
+
+  report.rows.push_back(makeRow(2, {
+                                       makeScore("KMeans", 0.9),
+                                       makeScore("DBSCAN", 0.4),
+                                       makeScore("KMedoids", 0.8),
+                                   }));
+
+  MarkdownReportWriter writer;
+  writer.write(outputPath, report);
+
+  const std::string content = readFile(outputPath);
+
+  EXPECT_NE(content.find("## Conclusions"), std::string::npos);
+  EXPECT_NE(content.find("The best result was achieved by KMeans "
+                         "with k-mer length 2, Rand Index = 0.9000."),
             std::string::npos);
 
   std::remove(outputPath.c_str());
