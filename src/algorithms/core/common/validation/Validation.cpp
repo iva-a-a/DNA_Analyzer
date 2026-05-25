@@ -1,14 +1,10 @@
 #include "Validation.hpp"
 
-namespace {
+namespace Validation {
 
 bool isDnaChar(char ch) noexcept {
   return ch == 'A' || ch == 'C' || ch == 'G' || ch == 'T';
 }
-
-} // namespace
-
-namespace Validation {
 
 bool isDnaString(const std::string &value) noexcept {
   for (char ch : value) {
