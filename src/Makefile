@@ -43,6 +43,3 @@ check-limits:
 
 clean-all-files:
 	$(MAKE) -C $(DNA_DIR) clean-all-files
-
-
-
