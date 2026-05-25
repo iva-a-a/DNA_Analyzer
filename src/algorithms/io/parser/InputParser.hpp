@@ -10,8 +10,9 @@
 
 namespace InputParser {
 AlignmentInput parseAlignmentInput(const std::vector<std::string> &lines);
-ExactSearchInput parseExactSearchInput(const std::string &text,
-                                       const std::string &pattern);
+ExactSearchInput
+parseExactSearchInput(const std::vector<std::string> &textLines,
+                      const std::vector<std::string> &patternLines);
 KSimilarityInput parseKSimilarityInput(const std::vector<std::string> &lines);
 MinWindowInput parseMinWindowInput(const std::vector<std::string> &lines);
 RegexMatchInput parseRegexMatchInput(const std::vector<std::string> &lines);

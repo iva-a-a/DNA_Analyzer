@@ -23,8 +23,20 @@ AlignmentInput parseAlignmentInput(const std::vector<std::string> &lines) {
   return {scoring, lines[1], lines[2]};
 }
 
-ExactSearchInput parseExactSearchInput(const std::string &text,
-                                       const std::string &pattern) {
+ExactSearchInput
+parseExactSearchInput(const std::vector<std::string> &textLines,
+                      const std::vector<std::string> &patternLines) {
+  if (textLines.size() != 1) {
+    throw InputFormatError("Text file must contain exactly one line");
+  }
+
+  if (patternLines.size() != 1) {
+    throw InputFormatError("Pattern file must contain exactly one line");
+  }
+
+  const std::string &text = textLines[0];
+  const std::string &pattern = patternLines[0];
+
   if (text.empty() || text.size() > 10000) {
     throw InputFormatError("Text cannot be empty or exceed 10000 characters");
   }
