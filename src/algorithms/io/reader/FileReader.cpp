@@ -19,16 +19,6 @@ template <typename Func> auto withFile(const std::string &filePath, Func func) {
 
 namespace FileReader {
 
-std::string readLine(const std::string &filePath) {
-  return withFile(filePath, [](std::ifstream &file) {
-    std::string line;
-
-    std::getline(file, line);
-
-    return line;
-  });
-}
-
 std::vector<std::string> readLines(const std::string &filePath) {
   return withFile(filePath, [](std::ifstream &file) {
     std::vector<std::string> lines;
