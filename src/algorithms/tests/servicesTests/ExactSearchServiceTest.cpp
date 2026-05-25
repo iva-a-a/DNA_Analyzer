@@ -119,18 +119,26 @@ TEST_F(ExactSearchServiceTest, FindsSingleCharacterPattern) {
   EXPECT_EQ(result.positions, expected);
 }
 
-TEST_F(ExactSearchServiceTest, ReadsOnlyFirstLineFromFiles) {
+TEST_F(ExactSearchServiceTest, ThrowsWhenTextFileHasMoreThanOneLine) {
   const auto textPath = makeFilePath("exact_text_multiline.txt");
-  const auto patternPath = makeFilePath("exact_pattern_multiline.txt");
+  const auto patternPath = makeFilePath("exact_pattern_singleline.txt");
 
   writeFile(textPath, "ACGT\nAAAA");
+  writeFile(patternPath, "CG");
+
+  EXPECT_THROW(service.run(textPath.string(), patternPath.string()),
+               InputFormatError);
+}
+
+TEST_F(ExactSearchServiceTest, ThrowsWhenPatternFileHasMoreThanOneLine) {
+  const auto textPath = makeFilePath("exact_text_singleline.txt");
+  const auto patternPath = makeFilePath("exact_pattern_multiline.txt");
+
+  writeFile(textPath, "ACGT");
   writeFile(patternPath, "CG\nTT");
 
-  const ExactSearchResult result =
-      service.run(textPath.string(), patternPath.string());
-
-  const std::vector<std::size_t> expected = {1};
-  EXPECT_EQ(result.positions, expected);
+  EXPECT_THROW(service.run(textPath.string(), patternPath.string()),
+               InputFormatError);
 }
 
 TEST_F(ExactSearchServiceTest, SupportsMaximumAllowedTextAndPatternLengths) {

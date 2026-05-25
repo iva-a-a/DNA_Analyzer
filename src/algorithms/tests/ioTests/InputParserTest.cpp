@@ -121,21 +121,22 @@ TEST(InputParserParseAlignmentInputTest, SupportsIntMinAndMax) {
 }
 
 TEST(InputParserParseExactSearchInputTest, ValidInput) {
-  const ExactSearchInput input = parseExactSearchInput("hello world", "world");
+  const ExactSearchInput input =
+      parseExactSearchInput({"hello world"}, {"world"});
 
   EXPECT_EQ(input.text, "hello world");
   EXPECT_EQ(input.pattern, "world");
 }
 
 TEST(InputParserParseExactSearchInputTest, TextLengthOnePatternLengthOne) {
-  const ExactSearchInput input = parseExactSearchInput("a", "a");
+  const ExactSearchInput input = parseExactSearchInput({"a"}, {"a"});
 
   EXPECT_EQ(input.text, "a");
   EXPECT_EQ(input.pattern, "a");
 }
 
 TEST(InputParserParseExactSearchInputTest, PatternCanEqualTextLength) {
-  const ExactSearchInput input = parseExactSearchInput("abc", "abc");
+  const ExactSearchInput input = parseExactSearchInput({"abc"}, {"abc"});
 
   EXPECT_EQ(input.text, "abc");
   EXPECT_EQ(input.pattern, "abc");
@@ -145,7 +146,7 @@ TEST(InputParserParseExactSearchInputTest, AllowsMaxTextLength) {
   const std::string text(10000, 'a');
   const std::string pattern(100, 'a');
 
-  const ExactSearchInput input = parseExactSearchInput(text, pattern);
+  const ExactSearchInput input = parseExactSearchInput({text}, {pattern});
 
   EXPECT_EQ(input.text.size(), size_t{10000});
   EXPECT_EQ(input.pattern.size(), size_t{100});
@@ -156,39 +157,39 @@ TEST(InputParserParseExactSearchInputTest,
   const std::string text(100, 'a');
   const std::string pattern(100, 'a');
 
-  const ExactSearchInput input = parseExactSearchInput(text, pattern);
+  const ExactSearchInput input = parseExactSearchInput({text}, {pattern});
 
   EXPECT_EQ(input.text.size(), size_t{100});
   EXPECT_EQ(input.pattern.size(), size_t{100});
 }
 
 TEST(InputParserParseExactSearchInputTest, ThrowsWhenTextEmpty) {
-  EXPECT_THROW(parseExactSearchInput("", "a"), InputFormatError);
+  EXPECT_THROW(parseExactSearchInput({""}, {"a"}), InputFormatError);
 }
 
 TEST(InputParserParseExactSearchInputTest, ThrowsWhenPatternEmpty) {
-  EXPECT_THROW(parseExactSearchInput("abc", ""), InputFormatError);
+  EXPECT_THROW(parseExactSearchInput({"abc"}, {""}), InputFormatError);
 }
 
 TEST(InputParserParseExactSearchInputTest, ThrowsWhenBothEmpty) {
-  EXPECT_THROW(parseExactSearchInput("", ""), InputFormatError);
+  EXPECT_THROW(parseExactSearchInput({""}, {""}), InputFormatError);
 }
 
 TEST(InputParserParseExactSearchInputTest, ThrowsWhenTextTooLong) {
   const std::string text(10001, 'a');
 
-  EXPECT_THROW(parseExactSearchInput(text, "a"), InputFormatError);
+  EXPECT_THROW(parseExactSearchInput({text}, {"a"}), InputFormatError);
 }
 
 TEST(InputParserParseExactSearchInputTest, ThrowsWhenPatternTooLong) {
   const std::string text(200, 'a');
   const std::string pattern(101, 'a');
 
-  EXPECT_THROW(parseExactSearchInput(text, pattern), InputFormatError);
+  EXPECT_THROW(parseExactSearchInput({text}, {pattern}), InputFormatError);
 }
 
 TEST(InputParserParseExactSearchInputTest, ThrowsWhenPatternLongerThanText) {
-  EXPECT_THROW(parseExactSearchInput("ab", "abc"), InputFormatError);
+  EXPECT_THROW(parseExactSearchInput({"ab"}, {"abc"}), InputFormatError);
 }
 
 TEST(InputParserParseExactSearchInputTest,
@@ -196,7 +197,30 @@ TEST(InputParserParseExactSearchInputTest,
   const std::string text(99, 'a');
   const std::string pattern(100, 'a');
 
-  EXPECT_THROW(parseExactSearchInput(text, pattern), InputFormatError);
+  EXPECT_THROW(parseExactSearchInput({text}, {pattern}), InputFormatError);
+}
+
+TEST(InputParserParseExactSearchInputTest, ThrowsWhenTextFileHasNoLines) {
+  EXPECT_THROW(parseExactSearchInput({}, {"a"}), InputFormatError);
+}
+
+TEST(InputParserParseExactSearchInputTest, ThrowsWhenPatternFileHasNoLines) {
+  EXPECT_THROW(parseExactSearchInput({"abc"}, {}), InputFormatError);
+}
+
+TEST(InputParserParseExactSearchInputTest, ThrowsWhenTextFileHasTooManyLines) {
+  EXPECT_THROW(parseExactSearchInput({"abc", "def"}, {"a"}), InputFormatError);
+}
+
+TEST(InputParserParseExactSearchInputTest,
+     ThrowsWhenPatternFileHasTooManyLines) {
+  EXPECT_THROW(parseExactSearchInput({"abc"}, {"a", "b"}), InputFormatError);
+}
+
+TEST(InputParserParseExactSearchInputTest,
+     ThrowsWhenBothFilesHaveTooManyLines) {
+  EXPECT_THROW(parseExactSearchInput({"abc", "def"}, {"a", "b"}),
+               InputFormatError);
 }
 
 TEST(InputParserParseKSimilarityInputTest, ValidInput) {
