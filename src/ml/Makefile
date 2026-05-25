@@ -15,6 +15,8 @@ APP_BIN = $(BUILD_DIR)/dna_clustering
 TEST_BIN = $(BUILD_DIR)/ml_tests_runner
 LIB_BIN = $(BUILD_DIR)/ML_Analyzer.a
 
+COVERAGE_FLAGS =
+
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Darwin)
@@ -38,6 +40,11 @@ OBJ_FILES = $(SRC_FILES:%.cpp=$(BUILD_DIR)/%.o)
 MAIN_OBJ_FILE = $(MAIN_FILE:%.cpp=$(BUILD_DIR)/%.o)
 TEST_OBJ_FILES = $(TEST_FILES:%.cpp=$(BUILD_DIR)/%.o)
 
+LIB_CPPFLAGS = $(CPPFLAGS) $(COVERAGE_FLAGS)
+APP_CPPFLAGS = $(CPPFLAGS)
+TEST_CPPFLAGS = $(CPPFLAGS) $(GTEST_INCLUDE) $(COVERAGE_FLAGS)
+TEST_LDFLAGS = $(GTEST_LIB_PATH) $(GTEST_LIBS) $(COVERAGE_FLAGS)
+
 .PHONY: all clean tests test app library coverage
 
 all: library tests app
@@ -51,8 +58,9 @@ tests: $(TEST_BIN)
 
 test: tests
 
-coverage: CPPFLAGS += $(GCOV_FLAGS)
-coverage: clean tests
+coverage: COVERAGE_FLAGS = $(GCOV_FLAGS)
+coverage: clean $(TEST_BIN)
+	$(TEST_BIN)
 	@mkdir -p $(GCOV_DIR)
 	gcovr \
 		--root . \
@@ -74,12 +82,20 @@ $(LIB_BIN): $(OBJ_FILES)
 
 $(APP_BIN): $(LIB_BIN) $(MAIN_OBJ_FILE)
 	@mkdir -p $(dir $@)
-	$(CPP) $(CPPFLAGS) $(MAIN_OBJ_FILE) $(LIB_BIN) -o $@
+	$(CPP) $(APP_CPPFLAGS) $(MAIN_OBJ_FILE) $(LIB_BIN) -o $@
 
 $(TEST_BIN): $(LIB_BIN) $(TEST_OBJ_FILES)
 	@mkdir -p $(BUILD_DIR)
-	$(CPP) $(CPPFLAGS) $(TEST_OBJ_FILES) $(LIB_BIN) -o $@ $(GTEST_LIB_PATH) $(GTEST_LIBS)
+	$(CPP) $(CPPFLAGS) $(TEST_OBJ_FILES) $(LIB_BIN) -o $@ $(TEST_LDFLAGS)
+
+$(BUILD_DIR)/$(TEST_DIR)/%.o: $(TEST_DIR)/%.cpp
+	@mkdir -p $(dir $@)
+	$(CPP) $(TEST_CPPFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/main.o: main.cpp
+	@mkdir -p $(dir $@)
+	$(CPP) $(APP_CPPFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/%.o: %.cpp
 	@mkdir -p $(dir $@)
-	$(CPP) $(CPPFLAGS) $(GTEST_INCLUDE) -c $< -o $@
+	$(CPP) $(LIB_CPPFLAGS) -c $< -o $@
