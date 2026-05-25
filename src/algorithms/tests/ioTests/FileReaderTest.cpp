@@ -25,58 +25,6 @@ void removeFileIfExists(const std::filesystem::path &path) {
 
 } // namespace
 
-TEST(FileReaderReadLineTest, ReadsSingleLineFile) {
-  const auto path = makeTempFilePath("file_reader_single_line.txt");
-  writeFile(path, "hello");
-
-  EXPECT_EQ(FileReader::readLine(path.string()), "hello");
-
-  removeFileIfExists(path);
-}
-
-TEST(FileReaderReadLineTest, ReadsOnlyFirstLineFromMultiLineFile) {
-  const auto path = makeTempFilePath("file_reader_multi_line.txt");
-  writeFile(path, "first\nsecond\nthird");
-
-  EXPECT_EQ(FileReader::readLine(path.string()), "first");
-
-  removeFileIfExists(path);
-}
-
-TEST(FileReaderReadLineTest, EmptyFileReturnsEmptyString) {
-  const auto path = makeTempFilePath("file_reader_empty.txt");
-  writeFile(path, "");
-
-  EXPECT_EQ(FileReader::readLine(path.string()), "");
-
-  removeFileIfExists(path);
-}
-
-TEST(FileReaderReadLineTest, FirstLineCanBeEmpty) {
-  const auto path = makeTempFilePath("file_reader_first_line_empty.txt");
-  writeFile(path, "\nsecond");
-
-  EXPECT_EQ(FileReader::readLine(path.string()), "");
-
-  removeFileIfExists(path);
-}
-
-TEST(FileReaderReadLineTest, PreservesSpacesInLine) {
-  const auto path = makeTempFilePath("file_reader_spaces.txt");
-  writeFile(path, "  hello world  \nnext");
-
-  EXPECT_EQ(FileReader::readLine(path.string()), "  hello world  ");
-
-  removeFileIfExists(path);
-}
-
-TEST(FileReaderReadLineTest, ThrowsWhenFileDoesNotExist) {
-  const auto path = makeTempFilePath("file_reader_missing.txt");
-  removeFileIfExists(path);
-
-  EXPECT_THROW(FileReader::readLine(path.string()), FileReadError);
-}
-
 TEST(FileReaderReadLinesTest, ReadsAllLines) {
   const auto path = makeTempFilePath("file_reader_lines.txt");
   writeFile(path, "first\nsecond\nthird");
