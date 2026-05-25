@@ -1,5 +1,7 @@
 #include "ExactSearchService.hpp"
 
+#include <vector>
+
 #include "../../core/common/dnaSequence/DnaSequence.hpp"
 #include "../../core/rabinKarp/RabinKarpSearcher.hpp"
 #include "../../io/parser/InputParser.hpp"
@@ -8,8 +10,9 @@
 ExactSearchResult
 ExactSearchService::run(const std::string &textFilePath,
                         const std::string &patternFilePath) const {
-  std::string textLines = FileReader::readLine(textFilePath);
-  std::string patternLines = FileReader::readLine(patternFilePath);
+  std::vector<std::string> textLines = FileReader::readLines(textFilePath);
+  std::vector<std::string> patternLines =
+      FileReader::readLines(patternFilePath);
 
   ExactSearchInput input =
       InputParser::parseExactSearchInput(textLines, patternLines);
