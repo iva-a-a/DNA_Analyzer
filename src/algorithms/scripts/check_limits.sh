@@ -2,7 +2,7 @@
 
 set -e
 
-APP="../build/app_runner"
+APP="../build/dna/dna_runner"
 DATA_DIR="test_data_large"
 
 MAX_TIME_SECONDS=1

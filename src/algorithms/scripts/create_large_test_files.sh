@@ -22,24 +22,18 @@ def write_file(path: Path, content: str) -> None:
 def dna_repeat(pattern: str, length: int) -> str:
     return (pattern * ((length // len(pattern)) + 1))[:length]
 
-# Exact search:
-# Text length = 10000, within validation limit.
 exact_text = dna_repeat("ACGTGGTACCGTTAAC", MAX_DNA_LEN)
 exact_pattern = "GGTACCGT"
 
 write_file(DATA_DIR / "exact_large_text.txt", exact_text + "\n")
 write_file(DATA_DIR / "exact_large_pattern.txt", exact_pattern + "\n")
 
-# Exact search, no matches:
 exact_no_match_text = "A" * MAX_DNA_LEN
 exact_no_match_pattern = "CGTCGTCGT"
 
 write_file(DATA_DIR / "exact_large_no_match_text.txt", exact_no_match_text + "\n")
 write_file(DATA_DIR / "exact_large_no_match_pattern.txt", exact_no_match_pattern + "\n")
 
-# Alignment:
-# Не делаем 10000 x 10000, потому что DP может выйти за 128 MB.
-# 1000 x 1000 обычно достаточно для проверки лимитов.
 align_len = 1000
 
 align_a = dna_repeat("ACGTACGTGGTT", align_len)
@@ -55,8 +49,6 @@ write_file(
     f"2 -1 -2\n{align_a}\n{align_b}\n"
 )
 
-# Regex:
-# Text length = 10000, pattern short.
 regex_text = dna_repeat("ACGT", MAX_DNA_LEN)
 regex_pattern_true = "A.*T"
 regex_pattern_false = "TAAAACCCC"
@@ -64,16 +56,11 @@ regex_pattern_false = "TAAAACCCC"
 write_file(DATA_DIR / "regex_large_true.txt", f"{regex_text}\n{regex_pattern_true}\n")
 write_file(DATA_DIR / "regex_large_false.txt", f"{regex_text}\n{regex_pattern_false}\n")
 
-# K-similarity:
-# Не делаем длинным: алгоритм обычно экспоненциальный/BFS.
-# Только A/C/G/T.
 k_a = "AACCGGTTAACC"
 k_b = "TTCCAACCGGAA"
 
 write_file(DATA_DIR / "k_similarity_large_input.txt", f"{k_a}\n{k_b}\n")
 
-# Min window:
-# Text length = 10000, pattern small.
 prefix = "A" * 4500
 middle = "GGGTTTCCCAAAGCTA"
 suffix = "C" * (MAX_DNA_LEN - len(prefix) - len(middle))
@@ -86,7 +73,6 @@ write_file(
     f"{min_window_text}\n{min_window_pattern}\n"
 )
 
-# Min window with repeated chars.
 prefix = "G" * 4500
 middle = "TTTAAACCCGGGAAACC"
 suffix = "T" * (MAX_DNA_LEN - len(prefix) - len(middle))
