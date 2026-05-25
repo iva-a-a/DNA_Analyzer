@@ -2,6 +2,7 @@
 
 #include "../../core/common/dnaSequence/DnaSequence.hpp"
 #include "../../core/regex/RegexMatcher.hpp"
+#include "../../core/regex/models/DnaRegexPattern.hpp"
 #include "../../io/parser/InputParser.hpp"
 #include "../../io/reader/FileReader.hpp"
 
@@ -10,7 +11,8 @@ bool RegexService::run(const std::string &inputFilePath) const {
   RegexMatchInput input = InputParser::parseRegexMatchInput(inputLines);
 
   auto dnaText = DnaSequence(input.sequence);
+  auto dnaPattern = DnaRegexPattern(input.pattern);
   auto matcher = RegexMatcher();
 
-  return matcher.matches(dnaText.value(), input.pattern);
+  return matcher.matches(dnaText.value(), dnaPattern.value());
 }
